@@ -90,13 +90,20 @@ export default function ValkyriesSchedulePage() {
 
                 {/* Heure et switch local */}
                 <div className="flex flex-col items-center justify-between border rounded-lg px-2 py-2 w-17 h-17 shadow-sm">
-                  {!showLocalTimes[match.id] && (
-                    <img
-                      src="https://flagcdn.com/w40/fr.png"
-                      alt="FR"
-                      className="w-5 h-4 mb-2"
-                    />
-                  )}
+                {!showLocalTimes[match.id] ? (
+  <img
+    src="https://flagcdn.com/w40/fr.png"
+    alt="FR"
+    className="w-5 h-4 mb-2"
+  />
+) : (
+  <img
+    src={`https://flagcdn.com/w40/${Intl.DateTimeFormat().resolvedOptions().locale.split('-')[1]?.toLowerCase() || 'us'}.png`}
+    alt="Local"
+    className="w-5 h-4 mb-2"
+  />
+)}
+
                   <div
                     className="flex items-center gap-1 text-gray-600 text-sm cursor-pointer"
                     onClick={() =>
