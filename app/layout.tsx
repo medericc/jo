@@ -11,11 +11,11 @@ export const metadata = {
     openGraph: {
       title: "Carla Schedule",
       description: "Les matchs de Carla.",
-      url: "https://carla-lucile.vercel.app/",
+      url: "https://carla-schedule.vercel.app/",
       siteName: "Carla Schedule",
       images: [
         {
-          url: "https://carla-lucile.vercel.app/preview.jpg", // Mets une image propre ici !
+          url: "https://carla-schedule.vercel.app/preview.jpg", // Mets une image propre ici !
           width: 1200,
           height: 630,
           alt: "Carla Schedule",
@@ -27,7 +27,7 @@ export const metadata = {
       card: "summary_large_image", // ✅ Correction ici
       title: "Carla Schedule",
       description: "Les matchs de Carla.",
-      images: ["https://carla-lucile.vercel.app/preview.jpg"], // Même image que Open Graph
+      images: ["https://carla-schedule.vercel.app/preview.jpg"], // Même image que Open Graph
     },
   };
   
