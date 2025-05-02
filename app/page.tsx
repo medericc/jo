@@ -7,6 +7,7 @@ import { Clock } from "lucide-react";
 type Match = {
   id: string;
   date: Date;
+  customLogo: string | null; // 👈 Ajout ici
   opponent: string;
   opponentLogo: string;
   link: string; // 👈 Ajout ici
@@ -23,7 +24,7 @@ function formatOpponentName(name: string): string {
   return mapping[name] || name;
 }
 
-export default function ValkyriesSchedulePage() {
+export default function LibertySchedulePage() {
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
   const [showLocalTimes, setShowLocalTimes] = useState<{ [key: string]: boolean }>({});
@@ -32,7 +33,7 @@ export default function ValkyriesSchedulePage() {
     const getMatches = async () => {
       const res = await fetch(
         `/api/proxy?url=${encodeURIComponent(
-          'https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/teams/gsv/schedule'
+          'https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/teams/nyl/schedule'
         )}`
       );
 
@@ -47,16 +48,21 @@ export default function ValkyriesSchedulePage() {
           const date = new Date(event.date);
 
           const [home, away] = event.competitions[0].competitors;
-          const isGSVHome = home.team.displayName === 'Golden State Valkyries';
+          const isGSVHome = home.team.displayName === 'New York Liberty';
 
           const opponentTeam = isGSVHome ? away.team : home.team;
+          const opponentName = formatOpponentName(opponentTeam.displayName);
 
+          // 👉 Ajoute ici ton logo custom si c’est Toyota Antelopes
+          const customLogo =
+            opponentName === 'Toyota Antelopes' ? '/logologo.png' : null;
           return {
             id: event.id,
             date,
             opponent: formatOpponentName(opponentTeam.displayName),
             opponentLogo: opponentTeam.logos?.[0]?.href ?? '',
-            link: event.links?.[0]?.href ?? '#', // 👈 Ajout ici
+            link: event.links?.[0]?.href ?? '#',
+            customLogo, // 👈 Ajout ici
           };
           
           });
@@ -126,11 +132,12 @@ export default function ValkyriesSchedulePage() {
                 {/* Logo + Name */}
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-md bg-white  flex items-center justify-center overflow-hidden">
-                    <img
-                      src={match.opponentLogo}
-                      alt={match.opponent}
-                      className="object-contain w-10 h-10"
-                    />
+                  <img
+  src={match.customLogo || match.opponentLogo}
+  alt={match.opponent}
+  className="object-contain w-10 h-10"
+/>
+
                   </div>
                   <p className="text-sm font-medium text-gray-900 max-w-[140px] break-words leading-tight">
     {match.opponent}
@@ -160,7 +167,7 @@ export default function ValkyriesSchedulePage() {
                   </div>
                 </div>
               </CardContent>
-              <CardFooter className="bg-purple-900 p-2 rounded-b-xl flex justify-center">
+              <CardFooter className="bg-teal-600 p-2 rounded-b-xl flex justify-center">
     <a
       href={match.link} // Assure-toi que match.link contient une URL valide
       target="_blank"
