@@ -1,4 +1,5 @@
 import './globals.css';
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata = {
     title: "Johannes Schedule",
@@ -11,7 +12,7 @@ export const metadata = {
     openGraph: {
       title: "Johannes Schedule",
       description: "Les matchs de Johannes.",
-      url: "https://carla-schedule.vercel.app/",
+      url: "https://johannes-schedule.vercel.app/",
       siteName: "Johannes Schedule",
       images: [
         {
@@ -38,11 +39,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
       <html lang="fr">
           <body className="min-h-screen bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white">
-          <header className="bg-gradient-to-r from-[#17B394] to-[#0D776D] text-neutral-100 p-8 text-4xl font-extrabold text-center shadow-md">
+          <header className="bg-gradient-to-r from-[#2eb398] to-[#148b80] text-neutral-100 p-8 text-4xl font-extrabold text-center shadow-md">
     MATCH DE MJ
 </header>
 
               <main className="container mx-auto mt-4">{children}</main>
+              <Analytics />
           </body>
       </html>
   );
