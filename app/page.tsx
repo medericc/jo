@@ -14,6 +14,61 @@ type Match = {
   link: string;
 };
 
+const translations = {
+  fr: {
+    addCalendarTitle: "Ajouter tous les matchs à votre calendrier ?",
+    appleOutlook: "📅 Apple / Outlook (.ics)",
+    googleCalendar: "📆 Google Calendar",
+    cancel: "Annuler",
+    googleInstructions: [
+      "✅ Le fichier a été téléchargé !",
+      "Voici comment l'importer dans Google Calendar :",
+      "1. Ouvrez Google Calendar",
+      "2. Cliquez sur la roue crantée en haut à droite → Paramètres",
+      "3. Allez dans Importer et exporter",
+      "4. Sélectionnez le fichier téléchargé : liberty_matchs.ics",
+      "5. Importez-le dans le calendrier de votre choix",
+      "🎉 Tous les matchs de MJ sont maintenant dans votre agenda !",
+    ],
+    iosInstructions: [
+      "✅ Le fichier a été téléchargé !",
+      "Si pas déjà importer :",
+      "1. Ouvrez l'application Fichiers",
+      "2. Rendez-vous dans le dossier Téléchargements",
+      "3. Appuyez sur le fichier liberty_matchs.ics",
+      "4. Choisissez Ajouter à Calendrier si proposé",
+      "📅 Tous les matchs sont maintenant ajoutés à votre calendrier !",
+    ],
+    close: "Fermer",
+  },
+  en: {
+    addCalendarTitle: "Add all matches to your calendar?",
+    appleOutlook: "📅 Apple / Outlook (.ics)",
+    googleCalendar: "📆 Google Calendar",
+    cancel: "Cancel",
+    googleInstructions: [
+      "✅ The file has been downloaded!",
+      "Here's how to import it into Google Calendar:",
+      "1. Open Google Calendar",
+      "2. Click the gear icon at the top right → Settings",
+      "3. Go to Import and Export",
+      "4. Select the downloaded file: liberty_matchs.ics",
+      "5. Import it into the calendar of your choice",
+      "🎉 All MJ matches are now in your agenda!",
+    ],
+    iosInstructions: [
+      "✅ The file has been downloaded!",
+      "If not already imported:",
+      "1. Open the Files app",
+      "2. Go to the Downloads folder",
+      "3. Tap on the liberty_matchs.ics file",
+      "4. Choose Add to Calendar if prompted",
+      "📅 All matches are now added to your calendar!",
+    ],
+    close: "Close",
+  },
+};
+
 function formatOpponentName(name: string): string {
   const mapping: { [key: string]: string } = {
     "Los Angeles Sparks": "L.A. Sparks",
@@ -28,6 +83,7 @@ function formatOpponentName(name: string): string {
 export default function LibertySchedulePage() {
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
+  const [language, setLanguage] = useState<"fr" | "en">("en");
   const [showLocalTimes, setShowLocalTimes] = useState<{ [key: string]: boolean }>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showGoogleInstructions, setShowGoogleInstructions] = useState(false);
@@ -143,7 +199,7 @@ export default function LibertySchedulePage() {
     generateICS();
     setShowGoogleInstructions(true);
   };
-
+  const t = translations[language]; // Ensure 't' is defined
   return (
     <div className="max-w-2xl mx-auto p-6">
     <ul className="space-y-4">
@@ -264,95 +320,95 @@ export default function LibertySchedulePage() {
 
       {/* Modal */}
       <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)} className="relative z-50">
-        <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
-        
-        <div className="fixed inset-0 flex items-center justify-center p-4">
-        <DialogPanel className="bg-white rounded-xl p-6 pb-2 max-w-sm mx-auto shadow-xl">
-  <DialogTitle className="text-xl font-bold mb-2 text-center">
-    Ajouter tous les matchs à votre calendrier ?
-  </DialogTitle>
+  <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
+  <div className="fixed inset-0 flex items-center justify-center p-4">
+    <DialogPanel className="bg-white rounded-xl p-6 pt-12 pb-4 max-w-sm mx-auto shadow-xl relative">
+      {/* Language Switcher */}
+      <div className="absolute top-3 right-3 flex space-x-1">
+        <button
+          onClick={() => setLanguage("fr")}
+          className={`px-2 py-1 rounded-full text-sm border ${
+            language === "fr" ?  "bg-white border-gray-300" : "bg-gray-300 border-gray-500"
+          }`}
+          title="Passer en français"
+        >
+          🇫🇷
+        </button>
+        <button
+          onClick={() => setLanguage("en")}
+          className={`px-2 py-1 rounded-full text-sm border ${
+            language === "en" ? "bg-white border-gray-300" : "bg-gray-300 border-gray-500"
+          }`}
+          title="Switch to English"
+        >
+          🇺🇸
+        </button>
+      </div>
 
-  {!showGoogleInstructions && !showiOSInstructions ? (
-    <div className="flex flex-col gap-4 mt-6">
-      <button
-        onClick={handleAppleOutlookImport}
-        className="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded text-sm"
-      >
-        📅 Apple / Outlook (.ics)
-      </button>
-      <button
-        onClick={handleGoogleCalendarImport }
-        className="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded text-sm"
-      >
-        📆 Google Calendar
-      </button>
-      <button
-        onClick={() => setIsModalOpen(false)}
-        className="text-sm text-gray-500 mt-1"
-      >
-        Annuler
-      </button>
-    </div>
-  ) : showGoogleInstructions ? (
-    <div className="max-w-md mx-auto bg-white rounded-lg p-4 space-y-3 text-gray-800 text-center ">
-      <p className="text-green-600 font-semibold text-sm">✅ Le fichier a été téléchargé !</p>
-      <p className="text-base font-medium">Voici comment l'importer dans Google Calendar :</p>
-      <ul className="list-decimal list-inside text-left pl-4 space-y-1 text-sm leading-relaxed mb-2">
-        <li>
-          Ouvrez <span className="font-semibold">Google Calendar</span>
-        </li>
-        <li>
-          Cliquez sur la roue crantée en haut à droite → <span className="font-semibold">Paramètres</span>
-        </li>
-        <li>
-          Allez dans <span className="font-semibold">Importer et exporter</span>
-        </li>
-        <li>
-          Sélectionnez le fichier téléchargé : <code className="bg-gray-100 px-1 py-0.5 rounded text-xs font-mono">liberty_matchs.ics</code>
-        </li>
-        <li>
-          Importez-le dans le calendrier de votre choix
-        </li>
-        <li className="font-medium">
-          🎉 Tous les matchs de MJ  sont maintenant dans votre agenda !
-        </li>
-      </ul>
-      <button
-        onClick={() => {
-          setIsModalOpen(false);
-          setShowGoogleInstructions(false);
-        }}
-        className="mt-6 text-sm text-purple-700 font-semibold hover:underline"
-      >
-        Fermer
-      </button>
-    </div>
-  ) : showiOSInstructions ? (
-    <div className="max-w-md mx-auto bg-white rounded-lg p-4 space-y-3 text-gray-800 text-center ">
-      <p className="text-green-600 font-semibold text-sm">✅ Le fichier a été téléchargé !</p>
-      <p className="text-base font-medium">Si pas déjà importer :</p>
-      <ul className="list-decimal list-inside text-left pl-4 space-y-1 text-sm leading-relaxed mb-2">
-        <li>Ouvrez l'application <span className="font-semibold">Fichiers</span></li>
-        <li>Rendez-vous dans le dossier <span className="font-semibold">Téléchargements</span></li>
-        <li>Appuyez sur le fichier <code className="bg-gray-100 px-1 py-0.5 rounded text-xs font-mono">liberty_matchs.ics</code></li>
-        <li>Choisissez <span className="font-semibold">Ajouter à Calendrier</span> si proposé</li>
-        <li className="font-medium">📅 Tous les matchs sont maintenant ajoutés à votre calendrier !</li>
-      </ul>
-      <button
-        onClick={() => {
-          setIsModalOpen(false);
-          setShowiOSInstructions(false);
-        }}
-        className="mt-6 text-sm text-purple-700 font-semibold hover:underline"
-      >
-        Fermer
-      </button>
-    </div>
-  ) : null}
-</DialogPanel>
+      {/* Modal Title */}
+      <DialogTitle className="text-xl font-bold mb-2 text-center">
+        {t.addCalendarTitle}
+      </DialogTitle>
 
+      {!showGoogleInstructions && !showiOSInstructions ? (
+        <div className="flex flex-col gap-4 mt-4">
+          <button
+            onClick={handleAppleOutlookImport}
+            className="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded text-sm"
+          >
+            {t.appleOutlook}
+          </button>
+          <button
+            onClick={handleGoogleCalendarImport}
+            className="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded text-sm"
+          >
+            {t.googleCalendar}
+          </button>
+          <button
+            onClick={() => setIsModalOpen(false)}
+            className="text-sm text-gray-500 mt-1"
+          >
+            {t.cancel}
+          </button>
         </div>
-      </Dialog>
+      ) : showGoogleInstructions ? (
+        <div className="space-y-3 text-center">
+          {t.googleInstructions.map((instruction: string, index: number) => (
+            <p key={index} className={index === 0 ? "text-green-600" : ""}>
+              {instruction}
+            </p>
+          ))}
+          <button
+            onClick={() => {
+              setIsModalOpen(false);
+              setShowGoogleInstructions(false);
+            }}
+            className="mt-6 text-sm text-purple-700 font-semibold hover:underline"
+          >
+            {t.close}
+          </button>
+        </div>
+      ) : (
+        <div className="space-y-3 text-center">
+          {t.iosInstructions.map((instruction: string, index: number) => (
+            <p key={index} className={index === 0 ? "text-green-600" : ""}>
+              {instruction}
+            </p>
+          ))}
+          <button
+            onClick={() => {
+              setIsModalOpen(false);
+              setShowiOSInstructions(false);
+            }}
+            className="mt-6 text-sm text-purple-700 font-semibold hover:underline"
+          >
+            {t.close}
+          </button>
+        </div>
+      )}
+    </DialogPanel>
+  </div>
+</Dialog>
   </div>
 
   );
