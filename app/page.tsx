@@ -9,6 +9,7 @@ import { createEvents } from "ics";
 type Match = {
   id: string;
   date: Date;
+  customLogo: string | null;
   opponent: string;
   opponentLogo: string;
   link: string;
@@ -112,7 +113,8 @@ export default function LibertySchedulePage() {
 
           const opponentTeam = isGSVHome ? away.team : home.team;
           const opponentName = formatOpponentName(opponentTeam.displayName);
-
+          const customLogo =
+          opponentName === 'Toyota Antelopes' ? '/logologo.png' : null;
   
           return {
             id: event.id,
@@ -120,6 +122,7 @@ export default function LibertySchedulePage() {
             opponent: formatOpponentName(opponentTeam.displayName),
             opponentLogo: opponentTeam.logos?.[0]?.href ?? '',
             link: event.links?.[0]?.href ?? '#',
+            customLogo,
           };
         });
 
@@ -257,7 +260,7 @@ export default function LibertySchedulePage() {
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-md bg-white  flex items-center justify-center overflow-hidden">
                   <img
-  src={ match.opponentLogo}
+  src={ match.customLogo || match.opponentLogo}
   alt={match.opponent}
   className="object-contain w-10 h-10"
 />
